@@ -1,0 +1,28 @@
+services:
+ postgre:
+  image: postgres:12.17
+  ports:
+   - 5432:5432   
+  volumes:
+
+  # Volume do tipo bind - diretório de volume do host (máquina local):diretório de volume do container
+  # - /mnt/d/Curso Docker e Kubernetes/kube-news/postgre_vol:/var/lib/postgresql/data - ERRO!
+
+  # OBS: Se estiver rodando Linux no WSL2 do Windows, o bind mount para o diretório Windows /mnt/d/... não permite que o
+  #      Postgres altere permissões de usuário, mesmo rodando o comando chown no diretório
+
+  # Nesses casos, tem 2 opções:
+  # 1) Rodar o Docker Volume (ex: postgres_data:/var/lib/postgresql/data) que não há problema de permissão
+  # 2) Caso queira manter a criação de volume com bind, é recomendado criar um diretório físico dentro do Linux
+  #    (exemplo: mkdir -p ~/postgres_data - Irá criar a pasta postgres_data dentro da pasta home do usuário Linux)
+    # - postgres_docker_vol:/var/lib/postgresql/data 
+
+    # Mapeando um volume gerenciado pelo Docker
+    - postgres_docker_vol:/var/lib/postgresql/data 
+
+# Criando um volume gerenciado pelo Docker (Docker Volume) - Mesmo nível onde está o services
+volumes:
+  postgres_docker_vol:
+   name: ex_docker_compose_external_vol
+   external: true #Referenciando um volume externo ao container
+     
