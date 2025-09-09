@@ -1,9 +1,14 @@
 services:
+# Banco de dados Postgres
  postgre:
   image: postgres:12.17
   ports:
-   - 5432:5432   
-  volumes:
+   - 5432:5432
+  environment:
+   POSTGRES_PASSWORD: 1234
+   POSTGRES_USER: kubeadmin
+   POSTGRES_DB: kubenews
+  volumes: 
 
   # Volume do tipo bind - diretório de volume do host (máquina local):diretório de volume do container
   # - /mnt/d/Curso Docker e Kubernetes/kube-news/postgre_vol:/var/lib/postgresql/data - ERRO!
@@ -19,10 +24,32 @@ services:
 
     # Mapeando um volume gerenciado pelo Docker
     - postgres_docker_vol:/var/lib/postgresql/data 
+  networks:
+    - kube_news_net  
+
+# App
+ kube_news:
+  image: victormello93/kube-news:v1
+  ports:
+    - 8080:8080
+  networks:
+    - kube_news_net
+  environment:
+    DB_PASSWORD: 1234
+    DB_USERNAME: kubeadmin
+    DB_DATABASE: kubenews
+    DB_HOST: postgre #Especificando o nome do container (service) do banco de dados
 
 # Criando um volume gerenciado pelo Docker (Docker Volume) - Mesmo nível onde está o services
 volumes:
   postgres_docker_vol:
    name: ex_docker_compose_external_vol
-   external: true #Referenciando um volume externo ao container
+   external: true #Referenciando um volume externo a um container - Utilizando o name como nome válido de um volume criado externamente
+
+networks:
+  kube_news_net:
+   name: knews_net_external 
+   driver: bridge
+   external: true #Referenciando uma network externa a um container - Utilizando o name como nome válido de uma network criado externamente
      
+   
