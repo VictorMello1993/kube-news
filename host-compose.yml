@@ -1,0 +1,8 @@
+services:
+ nginx:
+  image: nginx
+  network_mode: "host" #Especificando o tipo de driver de rede como sendo host para conectar diretamente à rede da máquina local
+ curl:
+  image: nginx
+  extra_hosts:
+   aula_docker.victormello.com: "seu_ip_host" #Definindo o DNS de um IP da máquina local
