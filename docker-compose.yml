@@ -34,22 +34,24 @@ services:
     - 8080:8080
   networks:
     - kube_news_net
+  depends_on:
+    - postgre    
   environment:
     DB_PASSWORD: 1234
     DB_USERNAME: kubeadmin
     DB_DATABASE: kubenews
-    DB_HOST: postgre #Especificando o nome do container (service) do banco de dados
+    DB_HOST: postgre #Especificando o nome do container (service) do banco de dados para que conecte na mesma rede
 
 # Criando um volume gerenciado pelo Docker (Docker Volume) - Mesmo nível onde está o services
 volumes:
   postgres_docker_vol:
    name: ex_docker_compose_external_vol
-   external: true #Referenciando um volume externo a um container - Utilizando o name como nome válido de um volume criado externamente
+  #  external: true #Referenciando um volume externo a um container - Utilizando o name como nome válido de um volume criado externamente
 
 networks:
   kube_news_net:
-   name: knews_net_external 
+  #  name: knews_net_external 
    driver: bridge
-   external: true #Referenciando uma network externa a um container - Utilizando o name como nome válido de uma network criado externamente
+  #  external: true #Referenciando uma network externa a um container - Utilizando o name como nome válido de uma network criado externamente
      
    
