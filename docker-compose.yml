@@ -1,13 +1,13 @@
 services:
 # Banco de dados Postgres
  postgre:
-  image: postgres:12.17
+  image: postgres:${POSTGRES_TAG}
   ports:
    - 5432:5432
   environment:
-   POSTGRES_PASSWORD: 1234
-   POSTGRES_USER: kubeadmin
-   POSTGRES_DB: kubenews
+   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+   POSTGRES_USER: ${POSTGRES_USER}
+   POSTGRES_DB: ${POSTGRES_DB}
   volumes: 
 
   # Volume do tipo bind - diretório de volume do host (máquina local):diretório de volume do container
@@ -29,7 +29,10 @@ services:
 
 # App
  kube_news:
-  image: victormello93/kube-news:v1
+  image: victormello93/kube-news:${KUBE_NEWS_TAG:-latest}
+  build: 
+    context: ./src
+    dockerfile: Dockerfile
   ports:
     - 8080:8080
   networks:
@@ -37,15 +40,14 @@ services:
   depends_on:
     - postgre    
   environment:
-    DB_PASSWORD: 1234
-    DB_USERNAME: kubeadmin
-    DB_DATABASE: kubenews
+    DB_PASSWORD: ${POSTGRES_PASSWORD}
+    DB_USERNAME: ${POSTGRES_USER}
+    DB_DATABASE: ${POSTGRES_DB}
     DB_HOST: postgre #Especificando o nome do container (service) do banco de dados para que conecte na mesma rede
 
 # Criando um volume gerenciado pelo Docker (Docker Volume) - Mesmo nível onde está o services
 volumes:
   postgres_docker_vol:
-   name: ex_docker_compose_external_vol
   #  external: true #Referenciando um volume externo a um container - Utilizando o name como nome válido de um volume criado externamente
 
 networks:
