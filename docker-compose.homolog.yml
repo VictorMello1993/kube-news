@@ -1,0 +1,5 @@
+services:
+ kube_news:
+  image: victormello93/kube-web-kubenews:${KUBE_NEWS_TAG:-latest}
+  ports:
+   - 8181:8080
